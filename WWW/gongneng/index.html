@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>mapData</title>
+    <script src="./common/jq.js"></script>
+    <script src="./common/echarts.min.js"></script>
+    <script src="./common/echarts-wordcloud.min.js"></script>
+    <script src="./common/china.js"></script>
+    <script>
+    </script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        div {
+            box-sizing: border-box;
+        }
+        
+        .row {
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+        }
+        
+        .body-content {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+	<!--<div class="back" style="background-color: #02383A">
+       <a href="javascript:history.go(-1);" style="color: aliceblue;text-decoration: none">返回上一页</a>
+	</div>-->
+<div class="row">
+    <div class="body-content" id="chinap">
+		
+    </div>
+</div>
+    <script src="js/china.js"></script>
+    <script>
+        echartsChina('chinap') //调用地图函数
+    </script>
+</body>
+
+</html>

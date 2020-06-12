@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>视频图像</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="plugins/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="css/begtable.css"/>
+	</head>
+	
+    <body>
+		<div style="margin: 15px;">
+	<div class="one" style="float: left">	
+		<fieldset class="layui-elem-field" style=" width: 400px; height: 280px; border: 1px solid #DDDDDD;">
+				<legend>作物视频</legend>
+				<div class="layui-field-box">
+					
+					<video width="400" controls="">
+                          <source src="video/On-the-vine.mp4" type="video/mp4">
+                          
+                    </video>
+				
+				</div>
+		</fieldset>
+	</div>
+			
+	<div class="two" style="float: left; margin-left: 30px;">
+		<fieldset class="layui-elem-field" style=" width: 400px; height: 280px; border: 1px solid #DDDDDD;">
+				<legend>建议信息</legend>
+				<div class="layui-field-box">
+			         <div id="xx" style=" width: 400px; height: 220px; border: 1px solid #DDDDDD;">	
+				   <img src="images/plant.png" style="width: 95%;height: 100%" /> <!--图片以及放置比例均可调-->       
+                                  
+					 </div>						
+				</div>
+		</fieldset>
+			
+	</div>
+			
+			<hr>
+			
+			<fieldset class="layui-elem-field">
+			<legend>作物图像</legend>
+				<div class="layui-field-box">
+					<div id="xy" style=" width: 1255px; height: 600px; ; border: 1px solid #DDDDDD;">
+					<iframe src="../gongneng/imagePage.html" width="100%" height="100%" frameborder="0"></iframe>
+				</div>
+					</div>
+			</fieldset>	
+	</div>
+		
+	</body>
+
+</html>

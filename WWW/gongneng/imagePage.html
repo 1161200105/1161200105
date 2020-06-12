@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Picture</title>
+    <style type="text/css">
+		html{ overflow-x:hidden;}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .file {
+            vertical-align: top;
+            position: relative;
+            display: inline-block;
+             /*background: #D0EEFF;*/ 
+            border: 1px solid #ffffff;
+            border-radius: 4px;
+            padding: 4px 12px;
+            overflow: hidden;
+            color: #ffffff;
+            text-decoration: none;
+            text-indent: 0;
+            line-height: 20px;
+        }
+        
+        .file input {
+            position: absolute;
+            font-size: 100px;
+            right: 0;
+            top: 0;
+            opacity: 0;
+        }
+        
+        .newImg {
+            width: 19.1%;
+            display: block;
+            margin: 5px;
+            padding: 4px;
+            line-height: 1.42857143;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: all .2s ease-in-out;
+        }
+        
+        .content {
+            width: 1300px;
+            margin: 0 auto;
+            margin-bottom: 100px;
+        }
+        
+        .content-title {
+            width: 100%;
+            font-size: 22px;
+            padding: 20px 0;
+            font-weight: bold;
+        }
+        
+        .header {
+            padding: 20px;
+            text-align: center;
+            background: #009688;/*div背景色#1f1f1f*/
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #image {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .header-title {
+            color: #ffffff;
+            font-size: 22px;
+            margin-right: 10px;
+        }
+    </style>
+    <script type="text/javascript">
+        var ImageData = []
+
+        function fileChange(that) {
+            var files = that.files;
+            var filesJson = '[';
+            for (var i = 0; i < files.length; i++) {
+                let name = files[i].name;
+                let size = Math.round(files[i].size / 1024) + "K";
+                if (/\.jpg$/ig.test(name)) { //这里按要求筛选所有dll文件
+                    filesJson += '{"name":"' + name + '","size":"' + size + '"},';
+                }
+            }
+            filesJson = filesJson.slice(0, -1) + "]";
+            createTable(filesJson);
+        }
+
+        function createTable(jsonStr) {
+            var obj = JSON.parse(jsonStr);
+            var monthT = ''; //标题的标志位
+            for (var i in obj) {
+                var data = obj[i].name.slice(16); //先截取192.168.1.64_01_后面的数值做判断
+                var year = data.slice(0, 4); //获取年 //这样就可知道当前图片的文件夹
+                var month = data.slice(4, 6); //获取月 //这样就可知道当前图片的文件夹
+                var day = data.slice(6, 8); //获取日 //这样就可知道当前图片的文件夹
+                ImageData.push({
+                    id: i,
+                    title: `${year}年${month}月${day}日`,
+                    src: `./picture_plant/${year}-${month}-${day}/${obj[i].name}`
+                })
+                var image = document.getElementById('image'); //获取盒子
+                var imgs = document.createElement("img"); //创建img元素
+                var yearPage = document.createElement("div"); //创建年标题
+                if (monthT != month) {
+                    yearPage.innerHTML = `${year}年${month}月${day}日`
+                    yearPage.setAttribute("class", "content-title");
+                    image.appendChild(yearPage);
+                }
+                monthT = month
+                imgs.setAttribute("class", "newImg");
+                imgs.src = `./picture_plant/${year}-${month}-${day}/${obj[i].name}`
+                image.appendChild(imgs);
+            }
+            // setImagePage()
+        }
+
+        function setImagePage() {
+
+
+        }
+    </script>
+</head>
+
+<body>	
+  <div class="header">
+        <div class="header-title">图片文件夹</div>
+        <a href="javascript:;" class="file">选择文件夹
+        <input type="file" webkitdirectory directory onchange="fileChange(this);" />
+        </a>
+    </div>
+    <div class="content">
+        <div id="image">
+
+        </div>
+    </div>
+	
+</body>
+
+</html>

@@ -1,0 +1,156 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html" ; charset="utf-8"/>
+    <title>设备数据</title>
+    <link href="css/table.css" rel="stylesheet" type="text/css">
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+</head>
+<body style="background-color: #ecf0f5;font-family: 微软雅黑;color: #47505%9;min-width: 1000px;overflow: auto">
+<div class="from_main">
+    <div class="news_check">
+        <div class="check_left l_left">
+            <label>时间段：</label>
+            <input type="date" style="margin-right: 10px" id="startDate" >
+            <input type="date" id="endDate" >
+            <button class="check_btn" onclick="test()">查询</button>
+        </div>
+        <div class="check_right r_right">
+
+            <a class="btn btn-default">打印</a>
+            <a class="btn btn-default">导出</a>
+        </div>
+        <div class="clear"></div>
+    </div>
+
+    <div style="padding: 0 10px 0 10px ;border: 1px #ccc solid;background-color: #fff;height: 88%;overflow: auto">
+        <h1 class="form_h1">农业机器人设备信息</h1>
+        <p class="from_p">日期：2019-2-30 至 2020-4-30</p>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>编号</th>
+                <th>工作时长</th>
+                <th>工作状态</th>
+                <th>电量</th>
+                <th>地址</th>
+                <th>信息2</th>
+                <th>信息3</th>
+                <th>信息4</th>
+            </tr>
+            </thead>
+            <tbody id="test">
+            <tr>
+                <td>G2D1</td>
+                <td>-</td>
+                <td>未工作</td>
+                <td>-</td>
+                <td>大庆</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+			<tr>
+                <td>G2D2</td>
+                <td>-</td>
+                <td>工作</td>
+                <td>-</td>
+                <td>大庆</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+			<tr>
+                <td>G2D3</td>
+                <td>-</td>
+                <td>未工作</td>
+                <td>-</td>
+                <td>大庆</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+			<tr>
+                <td>G2D4</td>
+                <td>-</td>
+                <td>工作</td>
+                <td>-</td>
+                <td>大庆</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>     
+			<tr>
+                <td>XGC00101</td>
+                <td>-</td>
+                <td>未工作</td>
+                <td>-</td>
+                <td>七台河</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>  
+			<tr>
+                <td>XGC00102</td>
+                <td>-</td>
+                <td>未工作</td>
+                <td>-</td>
+                <td>七台河</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>  
+			<tr>
+                <td>XGC00102</td>
+                <td>-</td>
+                <td>未工作</td>
+                <td>-</td>
+                <td>七台河</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>  
+			<tr>
+                <td>XGC00102</td>
+                <td>-</td>
+                <td>未工作</td>
+                <td>-</td>
+                <td>七台河</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>  
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+
+</body>
+<!-- <script src="js/jquery/jQuery-2.2.0.min.js"></script> -->
+<script>
+	function test(){
+	document.getElementById("test").innerHTML = document.getElementById("startDate").value;
+		<!-- if( $("#startDate").val() == ""){ -->
+			<!-- document.getElementById("test").innerHTML = 1; -->
+			<!-- } -->
+		<!-- else { -->
+		<!-- document.getElementById("test").innerHTML = 2; -->
+		<!-- } -->
+		<!-- document.getElementById("test").innerHTML = 3; -->
+		<!-- var temp = "<tr><td>"+$('#startDate').val()+"</td><td>"+$('#endDate').val()+"</td></tr>"; -->
+		<!-- document.getElementById("test").innerHTML = "<tr><td>"+$('#startDate').val()+"</td><td>"+$('#endDate').val()+"</td></tr>"; -->
+		<!-- document.getElementById("test").innerHTML = "<tr><td>111</td><td>222</td></tr>"; -->
+		document.getElementById("test").innerHTML += $("#startDate").val();
+	}
+	<!-- $(function () { -->
+        <!-- $(".top_btn>a").each(function (index) { -->
+            <!-- $(this).click(function () { -->
+                <!-- $(".top_btn>a").removeClass("active"); -->
+                <!-- $(this).addClass("active") -->
+            <!-- }) -->
+        <!-- }); -->
+    <!-- }) -->
+</script>
+</html>

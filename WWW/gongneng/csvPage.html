@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>csv数据模型展示</title>
+    <script src="./common/jq.js"></script>
+    <script src="./common/echarts.min.js"></script>
+    <script src="./common/echarts-wordcloud.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+</head>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+    }
+    
+    html,
+    body {
+        height: 100%;
+        width: 100%;
+        background-color: #ffffff;
+    }
+    
+    .file {
+        vertical-align: top;
+        position: relative;
+        display: inline-block;
+        /* background: #D0EEFF; */
+        border: 1px solid #ffffff;
+        border-radius: 4px;
+        padding: 4px 12px;
+        overflow: hidden;
+        color: #ffffff;
+        text-decoration: none;
+        text-indent: 0;
+        line-height: 20px;
+    }
+    
+    .file input {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+    }
+    
+    .header {
+        padding: 20px;
+        text-align: center;
+        background: #11183c;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .header-title {
+        color: #ffffff;
+        font-size: 22px;
+        margin-right: 10px;
+    }
+    
+    .row {
+        width: 100%;
+        height: 100%;
+    }
+    
+    .row-margin {
+        width: 100%;
+        display: flex;
+        margin: 0 auto;
+        height: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+		background: #ffffff;
+    }
+    
+    .col-xs-5 {
+        width: 100%;
+        height: 600px;
+    }
+    
+    .header-button {
+        vertical-align: top;
+        position: relative;
+        display: inline-block;
+        border: 2px solid #ffffff;
+        border-radius: 4px;
+        padding: 10px 30px;
+        overflow: hidden;
+        color: #ffffff;
+        text-decoration: none;
+        text-indent: 0;
+        line-height: 20px;
+        font-size: 17px;
+        font-weight: bold;
+        margin: 0 5px;
+    }
+    
+    .action {
+        background-color: #ffffff;
+        border: 2px solid #6f7cc1;
+        color: #6f7cc1;
+    }
+    
+    #tab {
+        display: none;
+    }
+</style>
+
+<!-- <body onload="parseFile()"> -->
+<body>
+	<!-- <script type="text/javascript" src="data_list.php"></script> -->
+	
+	
+    <div class="header">
+        <div class="header-title" id="test">作物数据统计</div>
+		<label>时间段：</label>
+		<input type="date" id="startDate" >
+		<input type="date" id="endDate" >
+		<button class="check_btn" onclick="search()">查询</button>
+		<!-- <a href="javascript:;" class="file">选择csv文件 -->
+            <!-- <input type="file" name="csvfile" onchange="loadFile()" accept=".csv"  /> -->
+        <!-- </a> -->
+    </div>
+    <div class="header" id="tab">
+        <div class="header-button action" onclick="tabs(0)">G2D1</div>
+        <div class="header-button" onclick="tabs(1)">G2D2</div>
+        <div class="header-button" onclick="tabs(2)">G2D3</div>
+        <div class="header-button" onclick="tabs(3)">G2D4</div>
+    </div>
+    <div class="row">
+        <div class="row-margin">
+            <div class="col-xs-5" id="WS"></div>
+            <!-- <div class="col-xs-5" id="TY"></div> -->
+            <!-- <div class="col-xs-5" id="TP"></div> -->
+            <!-- <div class="col-xs-5" id="FS"></div> -->
+            <!-- <div class="col-xs-5" id="FX"></div> -->
+            <div class="col-xs-5" id="YL"></div>
+            <!-- <div class="col-xs-5" id="SC"></div> -->
+            <div class="col-xs-5" id="GH"></div>
+            <!-- <div class="col-xs-5" id="RZ"></div> -->
+            <!-- <div class="col-xs-5" id="QY"></div> -->
+            <div class="col-xs-5" id="CT"></div>
+        </div>
+    </div>
+	
+    <script src="js/outter.js"></script>
+    <script src="js/paim.js"></script>
+    <script src="js/pin.js"></script>
+    <script src="js/test.js"></script>
+	
+	<script>
+	function search(){
+		var xmlhttp1 = new XMLHttpRequest();
+		xmlhttp1.onreadystatechange = function(){
+			if (this.readyState == 4 && this.status == 200) {
+				<!-- document.getElementById("test").innerHTML += this.responseText; -->
+				eval(this.responseText);
+				data1 = [];
+				data2 = [];
+				data3 = [];
+				data4 = [];
+				parseFile(data_);
+			}
+		};
+		xmlhttp1.open("GET", "data_search.php?startDate="+document.getElementById("startDate").value+"&endDate="+document.getElementById("endDate").value, true);
+		xmlhttp1.send();
+	
+	}
+	</script>
+	
+    <script>
+        var reader = new FileReader();
+        var data1 = [] //XGC00101 数据
+        var data2 = [] //XGC00102 数据
+        var data3 = [] //XGC00103 数据
+        var data4 = [] //XGC00104 数据
+
+        //给input提交函数
+        function loadFile() {
+            var file = document.querySelector('input[name=csvfile]').files[0];
+            reader.addEventListener("load", parseFile, false);
+            if (file) {
+				reader.readAsText(file);
+            }
+        }
+
+        //tabs切换
+        function tabs(id) {
+            var doms = document.getElementsByClassName('header-button');
+            for (let i = 0; i < doms.length; i++) {
+                if (i == id) {
+                    doms[i].classList.add("action")
+                    tabsoncli(id)
+                } else {
+                    doms[i].classList.remove("action")
+                }
+            }
+        }
+
+        function tabsoncli(id) {
+            if (id == 0) {
+                parsePie(data1)
+            } else if (id == 1) {
+                parsePie(data2)
+            } else if (id == 2) {
+                parsePie(data3)
+            } else {
+                parsePie(data4)
+            }
+        }
+
+        function parseFile(data_) {
+			<!-- var doesColumnExist = false; -->
+				<!-- var tab = document.getElementById('tab'); //选项卡盒子id -->
+				<!-- var data = d3.csv.parse(reader.result, function(d) { -->
+					<!-- doesColumnExist = d.hasOwnProperty("someColumn"); -->
+					<!-- return d; -->
+				<!-- }); -->
+			<!-- var tab = document.getElementById('tab'); -->
+            for (let i = 0; i < data_.length; i++) {
+				var temp = new Array()
+                if (data_[i][0] === 'G2D1') {
+					temp[0] = data_[i][2];
+					temp[1] = data_[i][3];
+					temp[2] = data_[i][4];
+					temp[3] = data_[i][5];
+					temp[4] = data_[i][6]/10;
+                    data1.push(temp);
+                } else if (data_[i][0] === 'G2D2') {
+                    temp[0] = data_[i][2];
+					temp[1] = data_[i][3];
+					temp[2] = data_[i][4];
+					temp[3] = data_[i][5];
+					temp[4] = data_[i][6]/10;
+                    data2.push(temp);
+                } else if (data_[i][0] === 'G2D3') {
+                    temp[0] = data_[i][2];
+					temp[1] = data_[i][3];
+					temp[2] = data_[i][4];
+					temp[3] = data_[i][5];
+					temp[4] = data_[i][6]/10;
+                    data3.push(temp);
+                } else {
+                    temp[0] = data_[i][2];
+					temp[1] = data_[i][3];
+					temp[2] = data_[i][4];
+					temp[3] = data_[i][5];
+					temp[4] = data_[i][6]/10;
+                    data4.push(temp);
+                }
+            }
+            parsePie(data1);
+        }
+		
+		<!-- function parseFile() { -->
+            <!-- var doesColumnExist = false; -->
+            <!-- var tab = document.getElementById('tab'); //选项卡盒子id -->
+            <!-- var data = d3.csv.parse(reader.result, function(d) { -->
+                <!-- doesColumnExist = d.hasOwnProperty("someColumn"); -->
+                <!-- return d; -->
+            <!-- }); -->
+            <!-- for (let i in data) { -->
+                <!-- if (data[i].device_name === 'XGC00101') { -->
+                    <!-- data1.push(data[i]) -->
+                <!-- } else if (data[i].device_name === 'XGC00102') { -->
+                    <!-- data2.push(data[i]) -->
+                <!-- } else if (data[i].device_name === 'XGC00103') { -->
+                    <!-- data3.push(data[i]) -->
+                <!-- } else { -->
+                    <!-- data4.push(data[i]) -->
+                <!-- } -->
+            <!-- } -->
+            <!-- parsePie(data1) -->
+        <!-- } -->
+		
+
+        function parsePie(data) {
+            var tab = document.getElementById('tab'); //选项卡盒子id
+            tab.style.display = 'block'
+            var keys = [];
+            var wsw = []; //温度
+            var wss = []; //湿度
+            var ty = [];
+            var fs = [];
+            var yl = [];
+            var gh = [];
+            var rz = [];
+            var qy = [];
+            var ct = [];
+            var tp = [];
+            var fx = {};
+            var sc1 = []; //光照数据1
+            var sc2 = []; //光照数据2
+            var sc3 = []; //光照数据3
+            for (let i = 0; i < data.length; i++) {
+
+                //温度和湿度
+                <!-- let w = data[i].WS.slice(2, data[i].WS.indexOf('?')); //温度 -->
+                <!-- let s = data[i].WS.slice(data[i].WS.indexOf('?') + 1, data[i].WS.indexOf('%')); //湿度 -->
+                <!-- wsw.push(w); -->
+				<!-- wss.push(s); -->
+				wsw.push(data[i][0]);
+				wss.push(data[i][1]);
+				
+                //土壤盐度截取数据 追加到数组 ty  
+                <!-- let tys = data[i].TY.slice(0, data[i].TY.indexOf('m')); -->
+                <!-- ty.push(tys); -->
+
+                <!-- //土壤PH值截取数据 追加到数组 tp   -->
+                <!-- let tps = data[i].TP.slice(0, data[i].TP.indexOf('p')); -->
+                <!-- tp.push(tps); -->
+
+                <!-- //风速截取数据  追加到数组 fs  -->
+                <!-- let fss = data[i].FS.slice(0, data[i].FS.indexOf('m')); -->
+                <!-- fs.push(fss); -->
+
+                <!-- //风向统计次数  用fx对象统计 -->
+                <!-- if (fx[data[i].FX]) { -->
+                    <!-- fx[data[i].FX] += 1 -->
+                <!-- } else { -->
+                    <!-- fx[data[i].FX] = 1 -->
+                <!-- } -->
+
+                <!-- //雨量截取数据  追加到数组 yl -->
+                <!-- let yls = data[i].YL.slice(0, data[i].YL.indexOf('m')); -->
+                <!-- yl.push(yls); -->
+				yl.push(data[i][4])
+				
+                <!-- //光照截取数据  追加到数组 sc1 sc2 sc3 -->
+                <!-- let scs1 = data[i].SC.slice(0, data[i].SC.indexOf('?')); -->
+                <!-- let scs2 = data[i].SC.slice(data[i].SC.indexOf('?') + 1, data[i].SC.indexOf('%')); -->
+                <!-- let scs3 = data[i].SC.slice(data[i].SC.indexOf('%') + 1, data[i].SC.indexOf('L')); -->
+                <!-- sc1.push(scs1) -->
+                <!-- sc2.push(scs2) -->
+                <!-- sc3.push(scs3) -->
+
+                <!-- //日照时数截取数据  追加到数组 rz -->
+                <!-- let rzs = data[i].RZ.slice(0, data[i].RZ.indexOf('h')); -->
+                <!-- rz.push(rzs); -->
+
+                <!-- //光强截取数据  追加到数组 gh -->
+                <!-- let ghs = data[i].GH.slice(0, data[i].GH.indexOf('u')); -->
+                <!-- gh.push(ghs); -->
+				gh.push(data[i][2]);
+				
+                <!-- //大气压截取数据  追加到数组 qy -->
+                <!-- let qys = data[i].QY.slice(0, data[i].QY.indexOf('m')); -->
+                <!-- qy.push(qys); -->
+
+                <!-- //二氧化碳含量截取数据 追加到数组 ct -->
+                <!-- let cts = data[i].CT.slice(0, data[i].CT.indexOf('p')); -->
+                <!-- ct.push(cts); -->
+				ct.push(data[i][3]);
+				
+                keys.push(i + 1) //每个数据数据id自增
+            }
+            //温度和湿度曲线图带数据调用函数
+            echartsColumnarSum(
+                "WS",
+                keys,
+                database = {
+                    wsw: wsw,
+                    wss: wss
+                },
+                defaultdata = {
+                    fontColor: '#30eee9',
+                    title: '温度和湿度',
+                    type: 'mmol/L',
+                    backgroundColor: '#11183c',
+                    bottomColor: '#397cbc',
+                    contentColor: '#195384',
+                    contentHcolor: '#11366e',
+                    leftTextColor: '#186afe',
+                    leftColor: '#186afe',
+                    DataColor: '#aecb56',
+                    min: 0,
+                    max: 4,
+                }
+            );
+			
+            //土壤盐度曲线图带数据调用函数
+            <!-- echartsColumnar( -->
+                <!-- "TY", -->
+                <!-- keys, -->
+                <!-- ty, -->
+                <!-- defaultdata = { -->
+                    <!-- fontColor: '#30eee9', -->
+                    <!-- title: '土壤盐度', -->
+                    <!-- type: 'mmol/L', -->
+                    <!-- backgroundColor: '#11183c', -->
+                    <!-- bottomColor: '#397cbc', -->
+                    <!-- contentColor: '#195384', -->
+                    <!-- contentHcolor: '#11366e', -->
+                    <!-- leftTextColor: '#186afe', -->
+                    <!-- leftColor: '#186afe', -->
+                    <!-- DataColor: '#aecb56', -->
+                    <!-- min: 0, -->
+                    <!-- max: 4, -->
+                <!-- } -->
+            <!-- ); -->
+			
+            //土壤PH值曲线图带数据调用函数
+            <!-- echartsColumnar( -->
+                <!-- "TP", -->
+                <!-- keys, -->
+                <!-- tp, -->
+                <!-- defaultdata = { -->
+                    <!-- fontColor: '#30eee9', -->
+                    <!-- title: '土壤PH值', -->
+                    <!-- type: '/pH', -->
+                    <!-- backgroundColor: '#11183c', -->
+                    <!-- bottomColor: '#397cbc', -->
+                    <!-- contentColor: '#195384', -->
+                    <!-- contentHcolor: '#11366e', -->
+                    <!-- leftTextColor: '#186afe', -->
+                    <!-- leftColor: '#186afe', -->
+                    <!-- DataColor: '#aecb56', -->
+                    <!-- min: 0, -->
+                    <!-- max: 10, -->
+                <!-- } -->
+            <!-- ); -->
+            //风速曲线图带数据调用函数
+            <!-- echartsColumnar( -->
+                <!-- "FS", -->
+                <!-- keys, -->
+                <!-- fs, -->
+                <!-- defaultdata = { -->
+                    <!-- fontColor: '#30eee9', -->
+                    <!-- title: '风速', -->
+                    <!-- type: 'm/s', -->
+                    <!-- backgroundColor: '#11183c', -->
+                    <!-- bottomColor: '#397cbc', -->
+                    <!-- contentColor: '#195384', -->
+                    <!-- contentHcolor: '#11366e', -->
+                    <!-- leftTextColor: '#186afe', -->
+                    <!-- leftColor: '#186afe', -->
+                    <!-- DataColor: '#aecb56', -->
+                    <!-- min: 0, -->
+                    <!-- max: 4, -->
+                <!-- } -->
+            <!-- ); -->
+            //  风向曲线图带数据调用函数
+            <!-- echartsPaim( -->
+                <!-- "FX", -->
+                <!-- fx, -->
+                <!-- defaultdata = { -->
+                    <!-- fontColor: '#30eee9', -->
+                    <!-- title: '风向', -->
+                    <!-- type: 'ppm/', -->
+                    <!-- backgroundColor: '#11183c', -->
+                    <!-- bottomColor: '#397cbc', -->
+                    <!-- contentColor: '#195384', -->
+                    <!-- contentHcolor: '#11366e', -->
+                    <!-- leftTextColor: '#186afe', -->
+                    <!-- leftColor: '#186afe', -->
+                    <!-- DataColor: '#aecb56', -->
+                    <!-- min: 0, -->
+                    <!-- max: 3000, -->
+                <!-- } -->
+            <!-- ); -->
+            //雨量曲线图带数据调用函数
+            echartsColumnar(
+                "YL",
+                keys,
+                yl,
+                defaultdata = {
+                    fontColor: '#30eee9',
+                    title: '分析',
+                    <!-- type: 'mm/h', -->
+                    backgroundColor: '#11183c',
+                    bottomColor: '#397cbc',
+                    contentColor: '#195384',
+                    contentHcolor: '#11366e',
+                    leftTextColor: '#186afe',
+                    leftColor: '#186afe',
+                    DataColor: '#aecb56',
+                    min: 0,
+                    max: 1,
+                }
+            );
+            //光照度
+            <!-- echartsIllumination( -->
+                <!-- "SC", -->
+                <!-- keys, -->
+                <!-- database = { -->
+                    <!-- sc1: sc1, -->
+                    <!-- sc2: sc2, -->
+                    <!-- sc3: sc3 -->
+                <!-- }, -->
+                <!-- defaultdata = { -->
+                    <!-- fontColor: '#30eee9', -->
+                    <!-- title: '光照度', -->
+                    type: 'mmol/L',
+                    <!-- backgroundColor: '#11183c', -->
+                    <!-- bottomColor: '#397cbc', -->
+                    <!-- contentColor: '#195384', -->
+                    <!-- contentHcolor: '#11366e', -->
+                    <!-- leftTextColor: '#186afe', -->
+                    <!-- leftColor: '#186afe', -->
+                    <!-- DataColor: '#aecb56', -->
+                    <!-- min: 0, -->
+                    <!-- max: 4, -->
+                <!-- } -->
+            <!-- ); -->
+            //光强曲线图带数据调用函数
+            echartsColumnar(
+                "GH",
+                keys,
+                gh,
+                defaultdata = {
+                    fontColor: '#30eee9',
+                    title: '光强',
+                    type: 'umol/m2*s',
+                    backgroundColor: '#11183c',
+                    bottomColor: '#397cbc',
+                    contentColor: '#195384',
+                    contentHcolor: '#11366e',
+                    leftTextColor: '#186afe',
+                    leftColor: '#186afe',
+                    DataColor: '#aecb56',
+                    min: 0,
+                    max: 10000,
+                }
+            );
+            //日照时数曲线图带数据调用函数
+            <!-- echartsColumnar( -->
+                <!-- "RZ", -->
+                <!-- keys, -->
+                <!-- rz, -->
+                <!-- defaultdata = { -->
+                    <!-- fontColor: '#30eee9', -->
+                    <!-- title: '日照时数', -->
+                    <!-- type: 'h/', -->
+                    <!-- backgroundColor: '#11183c', -->
+                    <!-- bottomColor: '#397cbc', -->
+                    <!-- contentColor: '#195384', -->
+                    <!-- contentHcolor: '#11366e', -->
+                    <!-- leftTextColor: '#186afe', -->
+                    <!-- leftColor: '#186afe', -->
+                    <!-- DataColor: '#aecb56', -->
+                    <!-- min: 0, -->
+                    <!-- max: 400, -->
+                <!-- } -->
+            <!-- ); -->
+            //大气压曲线图带数据调用函数
+            <!-- echartsColumnar( -->
+                <!-- "QY", -->
+                <!-- keys, -->
+                <!-- qy, -->
+                <!-- defaultdata = { -->
+                    <!-- fontColor: '#30eee9', -->
+                    <!-- title: '大气压', -->
+                    <!-- type: 'mbar/', -->
+                    <!-- backgroundColor: '#11183c', -->
+                    <!-- bottomColor: '#397cbc', -->
+                    <!-- contentColor: '#195384', -->
+                    <!-- contentHcolor: '#11366e', -->
+                    <!-- leftTextColor: '#186afe', -->
+                    <!-- leftColor: '#186afe', -->
+                    <!-- DataColor: '#aecb56', -->
+                    <!-- min: 0, -->
+                    <!-- max: 3000, -->
+                <!-- } -->
+            <!-- ); -->
+            //  二氧化碳含量曲线图带数据调用函数
+            echartsColumnar(
+                "CT",
+                keys,
+                ct,
+                defaultdata = {
+                    fontColor: '#30eee9',
+                    title: '二氧化碳含量',
+                    type: 'ppm/',
+                    backgroundColor: '#11183c',
+                    bottomColor: '#397cbc',
+                    contentColor: '#195384',
+                    contentHcolor: '#11366e',
+                    leftTextColor: '#186afe',
+                    leftColor: '#186afe',
+                    DataColor: '#aecb56',
+                    min: 0,
+                    max: 3000,
+                }
+            );
+
+        }
+    </script>
+</body>
+
+</html>
